@@ -33,5 +33,11 @@ jobs:
       - name: Validate PR title
         run: mise x cocogitto -- cog verify "${{ github.event.pull_request.title }}"
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Lint
         run: mise run lint
+
+      - name: Test
+        run: mise run test

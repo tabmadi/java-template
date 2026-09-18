@@ -1,25 +1,39 @@
 [tools]
-lefthook = "2.0.11"
+lefthook = "2.1.0"
 cocogitto = "6.5.0"
-act = "0.2.83"
+act = "0.2.84"
+java = "temurin-25.0.4+7.0.LTS"
+
+[tasks.clean]
+run = "./gradlew clean"
 
 [tasks.setup]
-run = "lefthook install"
+run = "./gradlew --quiet classes && lefthook install"
 
 [tasks.format]
-run = "echo 'Ok'"
+run = "./gradlew spotlessApply"
 
 [tasks.lint]
-run = "echo 'Ok'"
+run = "./gradlew spotlessCheck compileJava compileTestJava"
 
 [tasks.test]
-run = "echo 'Ok'"
+run = "./gradlew test jacocoTestCoverageVerification"
 
 [tasks.check]
 depends = ["format", "lint", "test"]
 
 [tasks.pre-commit]
 depends = ["format", "lint"]
+
+[tasks.build]
+run = "./gradlew shadowJar"
+
+[tasks.run]
+run = "./gradlew --quiet --console=plain run"
+
+[tasks.start]
+depends = ["build"]
+run = "java -jar bin/app.jar"
 
 [tasks.act]
 run = "act pull_request --secret-file .env -e .github/act/pull_request.json -j checks"
