@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
-// TODO: Replace with your own group and version.
 group = "io.github.tabmadi"
 
 version = "0.0.0"
@@ -69,7 +68,8 @@ spotless {
         trimTrailingWhitespace()
         endWithNewline()
     }
-    kotlinGradle { ktlint() }
+    // ktlint reads .editorconfig, whose 2-space default is for YAML and Markdown.
+    kotlinGradle { ktlint().editorConfigOverride(mapOf("indent_size" to 4)) }
     format("misc") {
         target("*.md", "*.yml", ".gitignore", ".env.example")
         trimTrailingWhitespace()

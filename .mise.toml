@@ -1,0 +1,62 @@
+# Every tool that the repo needs is pinned here. `mise install` installs them.
+# Gradle comes from the committed wrapper, and the Java version also lives in gradle/libs.versions.toml.
+
+[tools]
+java = "temurin-25.0.4+7.0.LTS"
+lefthook = "2.2.2"
+cocogitto = "7.0.0"
+gitleaks = "8.30.1"
+rumdl = "0.2.79"
+
+[tasks.setup]
+description = "Compile once to fill the dependency cache, then install the git hooks"
+run = ["./gradlew --quiet classes", "lefthook install"]
+
+[tasks.run]
+description = "Run the app from source"
+run = "./gradlew --quiet --console=plain run"
+
+[tasks.build]
+description = "Build the shaded jar at bin/app.jar"
+run = "./gradlew shadowJar"
+
+[tasks.start]
+description = "Build and run the jar"
+depends = ["build"]
+run = "java -jar bin/app.jar"
+
+[tasks.clean]
+description = "Delete the build output"
+run = "./gradlew clean"
+
+[tasks.test]
+description = "Run the tests and the coverage floor"
+run = "./gradlew test jacocoTestCoverageVerification"
+
+[tasks."lint:java"]
+description = "The Spotless format check and a compile with Error Prone, NullAway, and -Werror"
+run = "./gradlew spotlessCheck compileJava compileTestJava"
+
+[tasks."lint:md"]
+description = "Markdown structure and formatting, per ADR-0001"
+run = "rumdl check ."
+
+[tasks."lint:secrets"]
+description = "Scan the working tree for committed secrets"
+run = "gitleaks dir . --no-banner"
+
+[tasks.lint]
+description = "Every linter"
+depends = ["lint:java", "lint:md", "lint:secrets"]
+
+[tasks.format]
+description = "Apply every formatter"
+run = ["./gradlew spotlessApply", "rumdl check --fix ."]
+
+[tasks.check]
+description = "The gate: run it before you finish a change"
+run = ["mise run lint", "mise run test"]
+
+[tasks.ci]
+description = "Run exactly what CI runs. The pre-push hook and the CI workflow call it"
+run = ["mise run check", "mise run build"]

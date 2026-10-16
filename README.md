@@ -1,185 +1,104 @@
-# 🚀 Java Template
+# Java Template
 
-[![Java Version](https://img.shields.io/badge/Java-25_LTS-orange.svg)](https://adoptium.net/temurin/releases/)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Gradle](https://img.shields.io/badge/Gradle-Kotlin_DSL-02303A.svg)](https://docs.gradle.org/current/userguide/kotlin_dsl.html)
-[![mise](https://img.shields.io/badge/mise-managed-blue.svg)](https://mise.jdx.dev)
-[![lefthook](https://img.shields.io/badge/lefthook-enabled-green.svg)](https://github.com/evilmartians/lefthook)
-[![Spotless](https://img.shields.io/badge/Spotless-enabled-brightgreen.svg)](https://github.com/diffplug/spotless)
-[![Error Prone](https://img.shields.io/badge/Error_Prone-enabled-brightgreen.svg)](https://errorprone.info/)
-[![act](https://img.shields.io/badge/act-CI_simulation-blueviolet.svg)](https://github.com/nektos/act)
+A template for a Java 25 LTS application on Gradle with the Kotlin DSL. Every compiler warning is an error, Error Prone and NullAway run at compile time, and JaCoCo holds a coverage floor. It starts from [github-project-template](https://github.com/tabmadi/github-project-template), so it has the same hooks, CI gate, and documentation convention.
 
-This is a modern GitHub template repository for Java projects. Use this template to create a new Java application with a
-standardized structure, automated tooling, and best practices built-in.
+## Stack
 
-## ✨ Features
+| Tool | Owns |
+| --- | --- |
+| [Temurin](https://adoptium.net) JDK 25 | The runtime and the compile toolchain |
+| [Gradle](https://gradle.org) wrapper | Build, run, and test |
+| [Spotless](https://github.com/diffplug/spotless) | Format, with `palantir-java-format` |
+| [Error Prone](https://errorprone.info) and [NullAway](https://github.com/uber/NullAway) | Static analysis and the null check |
+| [JUnit](https://junit.org) and [AssertJ](https://assertj.github.io/doc/) | Tests |
+| [JaCoCo](https://www.jacoco.org) | The coverage floor |
+| [Typesafe Config](https://github.com/lightbend/config) | Configuration |
+| [mise](https://mise.jdx.dev) | Tool versions and tasks |
+| [lefthook](https://github.com/evilmartians/lefthook) | Git hooks |
+| [cocogitto](https://docs.cocogitto.io) | Conventional Commits checks |
+| [rumdl](https://github.com/rvben/rumdl) | Markdown lint |
+| [gitleaks](https://github.com/gitleaks/gitleaks) | Secret scan |
+| [Renovate](https://docs.renovatebot.com) | Updates to the pinned versions |
 
-- ☕ **Modern Java**: Java 25 LTS via a Gradle toolchain, so local builds and CI compile against the exact same JDK.
-- 🐘 **Gradle with the Kotlin DSL**: Type-safe build scripts, a committed wrapper, and all dependency versions declared
-  once in a [version catalog](gradle/libs.versions.toml).
-- 🐛 **Bug Detection at Compile Time**: **Error Prone** plus **NullAway** turn whole classes of runtime failures —
-  including `NullPointerException` — into compile errors.
-- 🎨 **Zero-Debate Formatting**: **Spotless** with `palantir-java-format` formats Java, Gradle, and misc files.
-- 🧪 **Tests and Coverage**: **JUnit 5** with **AssertJ** assertions, and **JaCoCo** enforcing a coverage floor as part
-  of `check`.
-- 🔧 **Modern Tooling**: Pre-configured with **mise** for tool and task management, **Lefthook** for Git hooks,
-  **Cocogitto** for Conventional Commits, and **act** for local CI simulation.
-- 📦 **Single-File Distribution**: A shaded, runnable `bin/app.jar` built by the **Shadow** plugin.
+## Getting started
 
-## 🚀 Quick Start
+1. Install [mise](https://mise.jdx.dev/getting-started.html).
+2. Clone the repo and install the JDK, the dependencies, and the hooks:
 
-### Prerequisites
-
-- [mise](https://mise.jdx.dev) - A multi-language version manager and task runner.
-- [Java](https://adoptium.net/) - JDK 25 (managed by mise).
-- [act](https://github.com/nektos/act) - Run your GitHub Actions locally.
-
-### Installation
-
-1. **Clone the repository**:
    ```bash
-   git clone https://github.com/tabmadi/java-template.git
+   git clone git@github.com:tabmadi/java-template.git
    cd java-template
-   ```
-
-2. **Setup environment**:
-   ```bash
-   # Install all required tools using mise
    mise install
-
-   # Set up the project (download dependencies and install git hooks)
    mise run setup
    ```
 
-## 🏃‍♂️ Usage
+3. Run the app:
 
-Instructions on how to run the project.
+   ```bash
+   mise run run
+   ```
 
-```bash
-# Run the application directly (development)
-mise run run
+## Tasks
 
-# Build and run the production jar
-mise run build
-java -jar bin/app.jar
-```
+| Task | Does |
+| --- | --- |
+| `mise run setup` | Compiles once to fill the dependency cache, then installs the git hooks |
+| `mise run run` | Runs the app from source |
+| `mise run build` | Builds the shaded jar at `bin/app.jar` |
+| `mise run start` | Builds and runs the jar |
+| `mise run format` | Applies every formatter |
+| `mise run lint` | Runs `lint:java`, `lint:md`, and `lint:secrets` |
+| `mise run test` | Runs the tests and the coverage floor |
+| `mise run check` | Runs `lint` and `test`. Run it before you finish a change |
+| `mise run ci` | Runs `check` and `build`, exactly as CI does. The `pre-push` hook runs it too |
 
-## 🛠️ Development
+## Layout
 
-### Available Scripts
-
-| Script            | Description                                     |
-|-------------------|-------------------------------------------------|
-| `mise run setup`  | Set up the project dependencies                 |
-| `mise run clean`  | Clean build artifacts                           |
-| `mise run format` | Format the code (Spotless)                      |
-| `mise run lint`   | Run Spotless checks and compile with Error Prone |
-| `mise run test`   | Run tests and verify coverage                   |
-| `mise run check`  | Format, lint, and test                          |
-| `mise run build`  | Build the shaded jar into `bin/app.jar`         |
-| `mise run run`    | Run the application                             |
-| `mise run start`  | Build, then run the jar                         |
-| `mise run act`    | Simulate CI locally with act                    |
-
-### 🧹 Code Quality
-
-Formatting is handled by **Spotless**, and correctness by **Error Prone** + **NullAway**, which run as part of every
-compilation. Warnings are errors (`-Xlint:all -Werror`), so the build fails on anything the compiler flags.
-
-```bash
-# Check formatting and compile with all static analysis enabled
-mise run lint
-
-# Auto-format the code
-mise run format
-```
-
-### 🧪 Tests
-
-Tests use **JUnit 5** with **AssertJ** assertions. **JaCoCo** enforces a line coverage floor of 80% (excluding the
-entry point); the HTML report lands in `build/reports/jacoco/test/html/index.html`.
-
-```bash
-mise run test
-```
-
-### 🪝 Git Hooks & Conventional Commits
-
-This project uses **Lefthook** for Git hooks and follows **Conventional Commits**.
-
-- **Pre-commit**: Formats code and runs the linters.
-- **Commit-msg**: Validates commit message format.
-- **Pre-push**: Final Conventional Commits check on the whole branch.
-
-#### Conventional Commits Example:
-
-```bash
-# ✅ Valid commit messages
-git commit -m "feat: add user authentication"
-git commit -m "fix: resolve memory leak"
-```
-
-## 📁 Project Structure
-
-```
+```text
 .
-├── src/
-│   ├── main/
-│   │   ├── java/           # Application code
-│   │   └── resources/      # application.conf, logback.xml
-│   └── test/java/          # Tests
-├── gradle/
-│   ├── libs.versions.toml  # Dependency version catalog
-│   └── wrapper/            # Gradle wrapper
-├── scripts/                # Helper scripts
-├── bin/                    # Built jar (created by build)
-├── .github/                # GitHub Actions and act configuration
-├── build.gradle.kts        # Build configuration
-├── mise.toml               # Mise configuration
-└── README.md               # You are here! 📍
+├── src/main/java/io/github/tabmadi/app/
+│   ├── Main.java             The entry point
+│   └── config/AppConfig.java The configuration, parsed once into a record
+├── src/main/resources/
+│   ├── application.conf      The configuration defaults
+│   └── logback.xml           The log format
+├── src/test/java/            The JUnit tests
+├── gradle/libs.versions.toml Every dependency and plugin version
+├── build.gradle.kts          The build
+├── docs/adr/                 The decisions: foundations, doc conventions, toolchain
+├── .mise.toml                Tool pins and tasks
+└── .lefthook.yml             Git hooks
 ```
 
-## ⚙️ Configuration
+## Configuration
 
-| File                        | Purpose              | Key Features                                             |
-|-----------------------------|----------------------|----------------------------------------------------------|
-| **mise.toml**               | Mise task runner     | Tool versions, task definitions                          |
-| **build.gradle.kts**        | Gradle build         | Toolchain, Spotless, Error Prone, NullAway, JaCoCo, Shadow |
-| **gradle/libs.versions.toml** | Version catalog    | Single source of truth for dependency versions           |
-| **.lefthook.yml**           | Git hooks            | Pre-commit linting, automated quality checks             |
-| **src/main/resources/application.conf** | App config | HOCON defaults with environment variable overrides     |
+`AppConfig` reads `application.conf`. An environment variable overrides each key.
 
-Application settings are read with [Typesafe Config](https://github.com/lightbend/config) into a typed `AppConfig`
-record. Every key in `application.conf` can be overridden by an environment variable — see [.env.example](.env.example).
+| Variable | Description | Default |
+| --- | --- | --- |
+| `APP_NAME` | The name of the application | `java-template` |
+| `LOG_LEVEL` | The log level | `INFO` |
 
-## 🤝 Contributing
+## Using this template
 
-Contributions are welcome! Please follow these steps:
+1. Create a repository from this template on GitHub.
+2. Change `group` and `version` in `build.gradle.kts` and `rootProject.name` in `settings.gradle.kts`.
+3. Rename the `io.github.tabmadi.app` package. Change `mainClass` and the NullAway `annotatedPackages` in `build.gradle.kts` to match.
+4. Update the contacts in `SECURITY.md` and the copyright line in `LICENSE`.
+5. Install the [Renovate app](https://github.com/apps/renovate) on the new repository.
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (**Conventional Commits**)
-4. Push to the branch
-5. Open a Pull Request
+## Decisions
 
-## 🔒 Security
+The ADRs in [docs/adr](docs/adr/README.md) record every decision and the reason for it. [ADR-0001](docs/adr/0001-documentation-conventions.md) is the house style for all text.
 
-Please see [SECURITY.md](SECURITY.md) for our security policy and how to report security vulnerabilities.
+## Contributing
 
-## 📄 License
+Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Commit messages follow [Conventional Commits](https://www.conventionalcommits.org), and the `commit-msg` hook checks them. Run `mise run check` before you open a pull request.
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+## Security
 
-## 🙏 Acknowledgments
+To report a vulnerability, follow [SECURITY.md](SECURITY.md).
 
-- [Temurin](https://adoptium.net/) for the JDK builds
-- [Gradle](https://gradle.org/) for the build system
-- [Spotless](https://github.com/diffplug/spotless) and [palantir-java-format](https://github.com/palantir/palantir-java-format) for formatting
-- [Error Prone](https://errorprone.info/) and [NullAway](https://github.com/uber/NullAway) for compile-time bug detection
-- [mise](https://mise.jdx.dev/) for tool and task management
-- [Lefthook](https://github.com/evilmartians/lefthook) for fast and reliable Git hooks
-- [act](https://github.com/nektos/act) for local CI simulation
+## License
 
----
-
-**Happy coding! 🎉** If you find this template useful, please give it a ⭐️
+Apache License 2.0. See [LICENSE](LICENSE).
